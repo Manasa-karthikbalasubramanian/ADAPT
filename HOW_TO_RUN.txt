@@ -1,0 +1,30 @@
+DataQuest 3.0 - D2C Advertising Intelligence Backend
+====================================================
+
+Quick start
+  python -m pip install -r requirements-dev.txt
+  python -m pytest -q
+  python run.py                 # http://127.0.0.1:8000/docs   (RELOAD=0 for no autoreload)
+
+Docker
+  docker build -t d2c-ad-intel .
+  docker run -p 8000:8000 -v d2c_state:/app/app/state d2c-ad-intel
+
+Pipeline (Ingest -> Diagnose -> Decide -> Execute -> Learn)
+  GET  /ingest/summary | /ingest/raw | /ingest/unified
+  GET  /diagnose/anomalies            incidents + evidence-driven root cause
+  GET  /decide/opportunities          per-campaign opportunity scores
+  GET  /decide/actions                prioritised, guard-railed actions
+  GET  /decide/allocate[/detail]?total_budget=&max_pct=
+  GET  /decide/brief                  everything + narrative in one call
+  POST /execute                       {action,target,params,dry_run}   (idempotent)
+  GET  /execute/log | /execute/{id} | /execute/{id}/impact?window_days=
+  POST /feedback/evaluate/{exec_id}   measure impact -> learn from it
+  GET  /feedback/summary              learned success rates / step multipliers
+  GET  /analytics/daily | by-platform | by-campaign | funnel | timeline
+
+Tip for demos: executions are dated "now", but the dataset is March 2025, so
+impact shows `pending_data`. Pass params.effective_date (e.g. "2025-03-07")
+to measure a real before/after on the historical data.
+
+Errors always look like {"error": code, "message": ..., "details": {...}}.

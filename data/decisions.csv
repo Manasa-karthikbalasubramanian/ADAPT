@@ -1,0 +1,11 @@
+action,target,reason,urgency
+INVESTIGATE,site,Blended CVR dropped to 0.0177 (z=-1.63) on 2025-03-05,high
+INVESTIGATE,site,Blended CVR dropped to 0.0148 (z=-2.04) on 2025-03-06,high
+PAUSE_CREATIVE,CR-107,CTR -55.0% / CVR -30.4% on C-007,high
+DECREASE_BUDGET,Meta,ROAS 8.98->4.42 (-50.7%) | root_cause=platform,medium
+DECREASE_BUDGET,TikTok,ROAS 28.7->18.07 (-37.0%) | root_cause=platform,medium
+REDUCE_SPEND,"C-003,C-006,C-009",SKU-1007 out of stock from 2025-03-04; 9835 sessions wasted,high
+SCALE_BUDGET,C-004,"SKU-1004 margin 65%, ROAS 10.21, stock 1328",medium
+SCALE_BUDGET,C-010,"SKU-1010 margin 75%, ROAS 15.39, stock 970",medium
+SCALE_BUDGET,C-011,"SKU-1004 margin 65%, ROAS 31.6, stock 1328",medium
+TRUST_GA_SALES,C-004,Meta reports 441 convs vs 339 actual (+30.1%),low

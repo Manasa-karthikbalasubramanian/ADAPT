@@ -1,0 +1,11 @@
+sku,category,price,cost,margin_pct
+SKU-1001,Apparel,49.0,19.6,0.6
+SKU-1002,Apparel,79.0,31.6,0.6
+SKU-1003,Footwear,129.0,51.6,0.6
+SKU-1004,Footwear,159.0,55.65,0.65
+SKU-1005,Accessories,29.0,8.7,0.7
+SKU-1006,Accessories,39.0,15.6,0.6
+SKU-1007,Home,89.0,44.5,0.5
+SKU-1008,Home,119.0,47.6,0.6
+SKU-1009,Beauty,69.0,17.25,0.75
+SKU-1010,Beauty,99.0,24.75,0.75

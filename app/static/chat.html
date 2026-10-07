@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>ADAPT — D2C Intelligence Bot</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 780px; margin: 40px auto; padding: 0 20px; color: #111; }
+  h1 { margin-bottom: 4px; }
+  .sub { color: #666; margin-bottom: 20px; font-size: 14px; }
+  #log { border: 1px solid #ddd; border-radius: 8px; padding: 16px; min-height: 320px; background: #fafafa; }
+  .msg { margin: 10px 0; padding: 10px 14px; border-radius: 8px; white-space: pre-wrap; }
+  .user { background: #e3f2fd; margin-left: 20%; }
+  .bot  { background: #fff; border: 1px solid #eee; margin-right: 20%; }
+  .meta { font-size: 11px; color: #888; margin-top: 4px; }
+  form { display: flex; gap: 8px; margin-top: 12px; }
+  input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; }
+  button { padding: 12px 20px; background: #1565c0; color: white; border: 0; border-radius: 8px; cursor: pointer; font-size: 15px; }
+  button:disabled { opacity: 0.5; }
+  .examples button { background: #eee; color: #333; padding: 6px 12px; font-size: 13px; margin: 4px 4px 0 0; }
+</style>
+</head>
+<body>
+  <h1>ADAPT</h1>
+  <div class="sub">Autonomous D2C Advertising Intelligence — grounded in your live dataset.</div>
+  <div id="log"></div>
+  <div class="examples" id="examples"></div>
+  <form id="f">
+    <input id="q" placeholder="Ask about ROAS, anomalies, opportunities..." autocomplete="off" />
+    <button id="b">Send</button>
+  </form>
+<script>
+const log = document.getElementById('log');
+const f = document.getElementById('f');
+const q = document.getElementById('q');
+const b = document.getElementById('b');
+const examples = document.getElementById('examples');
+const history = [];
+
+function add(role, text, meta) {
+  const d = document.createElement('div');
+  d.className = 'msg ' + role;
+  d.textContent = text;
+  if (meta) {
+    const m = document.createElement('div');
+    m.className = 'meta';
+    m.textContent = meta;
+    d.appendChild(m);
+  }
+  log.appendChild(d);
+  log.scrollTop = log.scrollHeight;
+}
+
+async function ask(text) {
+  add('user', text);
+  history.push({role:'user', content:text});
+  b.disabled = true;
+  try {
+    const r = await fetch('/chat', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({message: text, history})
+    });
+    const j = await r.json();
+    add('bot', j.answer, 'via ' + j.provider);
+    history.push({role:'assistant', content:j.answer});
+  } catch (e) {
+    add('bot', 'Error: ' + e.message);
+  }
+  b.disabled = false;
+  q.focus();
+}
+
+f.addEventListener('submit', e => {
+  e.preventDefault();
+  const t = q.value.trim();
+  if (!t) return;
+  q.value = '';
+  ask(t);
+});
+
+fetch('/chat/status').then(r=>r.json()).then(s => {
+  add('bot', 'Provider: ' + s.active_provider + '  ·  available: ' + s.available +
+      (s.available ? '' : '\n\nTo enable the LLM, set OPENROUTER_API_KEY or OPENAI_API_KEY, then restart.'));
+  const qs = [
+    'What is our blended ROAS?',
+    'Which campaigns should we scale?',
+    'What anomalies are active right now?',
+    'Which platform underperformed?',
+    'What is the attribution gap on C-004?'
+  ];
+  qs.forEach(t => {
+    const btn = document.createElement('button');
+    btn.textContent = t;
+    btn.onclick = () => ask(t);
+    examples.appendChild(btn);
+  });
+});
+</script>
+</body>
+</html>
