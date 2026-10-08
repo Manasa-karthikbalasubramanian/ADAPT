@@ -5,6 +5,8 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
 
 from app.routers import (ingest, diagnose, decide, feedback,
                          execute, analytics, chat)
@@ -43,6 +45,12 @@ app.include_router(analytics.router)
 app.include_router(chat.router)
 
 
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
+@app.get("/dashboard")
+def dashboard():
+    return FileResponse("app/static/dashboard.html")
+
 @app.get("/", tags=["meta"])
 def root():
     return {
@@ -57,3 +65,4 @@ def root():
 @app.get("/health", tags=["meta"])
 def health():
     return {"ok": True}
+
